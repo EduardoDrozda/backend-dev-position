@@ -10,11 +10,20 @@ services:
       - .:/app
     links:
       - postgres
+      - cache
     environment:
       NODE_ENV: development
       DATABASE_URL: postgres://postgres:password@postgres:5432/db
+      REDIS_URL: redis://cache
     depends_on:
       - postgres
+      - cache
+
+  cache:
+    image: redis
+    container_name: cache
+    expose:
+      - 6379
 
   postgres:
     image: postgres:latest
@@ -29,3 +38,4 @@ services:
 
 volumes:
   pgdata:
+  redis-data:

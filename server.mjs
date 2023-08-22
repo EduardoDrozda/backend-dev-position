@@ -1,12 +1,16 @@
 import express from 'express';
 import { ApolloServer } from 'apollo-server-express';
 import { readFileSync } from 'fs';
-import resolvers from './src/resolvers.js';
+
 import knex from 'knex';
 import knexConfig from './knexfile.js';
-import dotenv from 'dotenv';
-dotenv.config();
-const typeDefs = readFileSync('./schema/schema.graphql', 'utf8');
+
+import resolvers from './src/graphql/resolvers.js';
+import typeDefs from './src/graphql/typedefs.js';
+
+import enviroment from './src/config/enviroment.js';
+
+import './src/bootstrap.js';
 
 export const app = express();
 
@@ -15,18 +19,23 @@ const server = new ApolloServer({
   resolvers,
 });
 
-async function startServer() {
+export const configApplication = async () => {
+  const { nodeEnv } = enviroment;
+
   await server.start();
 
-  const db = knex(knexConfig[process.env.NODE_ENV]);
-
+  const db = knex(knexConfig[nodeEnv]);
   db.migrate.latest();
 
   server.applyMiddleware({ app });
+};
 
-  const PORT = process.env.PORT || 4000;
-  app.listen(PORT, () => {
-    console.log(`http://localhost:${PORT}/graphql`);
+async function startServer() {
+  await configApplication();
+
+  const { port } = enviroment;
+  app.listen(port, () => {
+    console.log(` 🚀 http://localhost:${port}/graphql`);
   });
 }
 

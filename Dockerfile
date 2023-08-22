@@ -8,4 +8,4 @@ RUN npm install
 
 COPY . .
 
-CMD ["npx", "nodemon", "server.mjs"]
+CMD ["npx", "nodemon", "server.js"]

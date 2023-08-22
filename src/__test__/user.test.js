@@ -1,12 +1,12 @@
 import request from 'supertest';
 import { expect } from 'chai';
-import { app } from '../../server.mjs';
+import { app, configApplication } from '../../server.mjs';
 
 describe('GraphQL API', () => {
   it('should create a user via the createUser mutation', async () => {
     const mutation = `
       mutation {
-        createUser(name: "Test User", email: "test@example.com") {
+        createUser(name: "Test User", email: "test@examplee.com") {
           id
           name
           email
@@ -15,7 +15,7 @@ describe('GraphQL API', () => {
     `;
 
     const response = await request(app)
-      .post('/graphql') 
+      .post('/graphql')
       .send({ query: mutation })
       .set('Content-Type', 'application/json');
 
